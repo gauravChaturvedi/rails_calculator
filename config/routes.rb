@@ -6,6 +6,14 @@ FirstApp::Application.routes.draw do
   # root 'welcome#index'
   root 'calculator#index'
   put 'calculator' => 'calculator#update'
+
+  get 'client' => 'client#show'
+
+  namespace :api do
+    put 'update' => "calculator#update"
+  end
+
+
   #get 'calculator' => 'calculator#update'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
