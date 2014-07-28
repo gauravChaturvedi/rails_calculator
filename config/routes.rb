@@ -10,6 +10,7 @@ FirstApp::Application.routes.draw do
   get 'client' => 'client#show'
 
   namespace :api do
+    post 'create' => "calculator#create"
     put 'update' => "calculator#update"
   end
 

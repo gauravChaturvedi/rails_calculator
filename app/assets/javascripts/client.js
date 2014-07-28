@@ -1,66 +1,80 @@
-var Calculator = function(selector){
-    this.selector = selector;
-    this.drawComponents();
-    this.bindButtonToPut();
+var Calculator =function(viewID){
+    this.viewElement = $(viewID);
+    this.inputElement = this.viewElement.find(".command");
+    this.submitButton = this.viewElement.find(".submit");
+    this.resultElement = this.viewElement.find(".state");
+    this.calculatorCreated =false;
+    this.initialize();
 }
 
 Calculator.prototype = {
-    putToServer: function() {
-        var self = this;
-        $.ajax({
+    initialize:function(){
+        //alert("Hello initialize function")
+        this.ObserveClick();
 
-            contentType: 'application/json',
-            data: '{"command":"'+self.getValueOfTextBox()+'"}',
-            //data: '{"command":"add 5"}',
-            url: 'http://localhost:3000/api/update',
-            type: 'PUT',
-            success: function(result) {
-                self.writeToResultTag(result.result);
-            },
-            error: function(){
-                self.writeToResultTag("Bad thing happened");
-            }
-        });}
-    ,
-
-    drawComponents: function(){
-
-        var body = document.getElementsByTagName('body');
-
-        var components =
-            '<div id="' +
-             this.selector+
-            '">'+
-            'Command:'+
-            '<input id="command" type="text" name="command"/>'+
-            '<button class='+this.selector+' type="submit" name="button">Submit</button>'+
-            '</div>';
-
-        document.body.innerHTML += components;
-    }
-    ,
-    getValueOfTextBox: function(){
-        return $("#"+this.selector+" #command").val();
     },
 
-    bindButtonToPut: function(){
-        var self = this;
-        console.log(self.selector);
-        $("."+ self.selector ).click(function() {
-            console.log(self.selector);
-            self.putToServer();
+    ObserveClick : function(){
+        var self=this;
+
+        this.submitButton.click(function()
+        {
+            //alert("Button clicked")
+            self.handleClickEvent();
+
         });
     },
 
-    writeToResultTag: function(result){
-        $("<div id='" +this.selector +" result'/>").html(result).appendTo("body");
+    handleClickEvent : function()
+    {
+        //alert("hello handle click event");
+        var self= this;
+//        if(!self.calculatorCreated){
+//            self.create();
+//        }
+        self.putToServer();
+    },
+
+    create : function()
+    {
+        var self= this;
+
+        $.ajax({
+            url: 'api/create',
+            method:'POST',
+            success:function(){
+                self.calculatorCreated = true;
+            }
+        });
+    },
+
+    putToServer: function() {
+        alert("Hello putToServer function")
+        var self = this;
+        var command = self.inputElement.val();
+        //alert(command);
+        $.ajax({
+
+            method: "PUT",
+            url: "api/update",
+            data: {command: command},
+            success: function (result) {
+                alert(result.result);
+                a = "<div>"+result.result+"</div>";
+             self.resultElement.append(a);
+            }
+        });
     }
+
+
 }
 
 
-$( document ).ready(function() {
+$(document).ready(function()
+    {
+        //alert("Hello ready function");
+        calculator1= new Calculator("#calculator1");
+        calculator2= new Calculator("#calculator2");
+    }
 
-    new Calculator("calculator-one");
-    new Calculator("calculator-two");
-
-});
+);
