@@ -2,6 +2,9 @@ require 'rails_helper'
 
 describe CalculatorController do
 
+  before(:each) do
+    sign_in :user
+  end
   context '#update' do
     render_views
     it 'should do addition' do

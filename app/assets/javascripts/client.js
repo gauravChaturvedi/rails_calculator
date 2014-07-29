@@ -1,80 +1,69 @@
 var Calculator =function(viewID){
     this.viewElement = $(viewID);
-    this.inputElement = this.viewElement.find(".command");
-    this.submitButton = this.viewElement.find(".submit");
-    this.resultElement = this.viewElement.find(".state");
+    this.observers = $({});
+    this.inputElement = $("#"+viewID+" .command");
+    this.submitButton = $("#"+viewID+" .submit");
+    this.resultElement = $("#"+viewID+" .state");
     this.calculatorCreated =false;
     this.initialize();
-}
+};
 
 Calculator.prototype = {
     initialize:function(){
-        //alert("Hello initialize function")
-        this.ObserveClick();
-
+        this.observeClick();
+    },
+    registerObserver: function(observer){
+        this.observers.on('notifyUpdateResultOnObservers', _.bind(observer.updateResultOnObservers, observer));
     },
 
-    ObserveClick : function(){
+    observeClick : function(){
         var self=this;
+        self.submitButton.bind("click", function () {
 
-        this.submitButton.click(function()
-        {
-            //alert("Button clicked")
-            self.handleClickEvent();
-
-        });
-    },
-
-    handleClickEvent : function()
-    {
-        //alert("hello handle click event");
-        var self= this;
-//        if(!self.calculatorCreated){
-//            self.create();
-//        }
-        self.putToServer();
-    },
-
-    create : function()
-    {
-        var self= this;
-
-        $.ajax({
-            url: 'api/create',
-            method:'POST',
-            success:function(){
-                self.calculatorCreated = true;
-            }
-        });
+            self.putToServer();
+        } );
     },
 
     putToServer: function() {
-        alert("Hello putToServer function")
         var self = this;
         var command = self.inputElement.val();
-        //alert(command);
         $.ajax({
-
             method: "PUT",
             url: "api/update",
-            data: {command: command},
-            success: function (result) {
-                alert(result.result);
-                a = "<div>"+result.result+"</div>";
-             self.resultElement.append(a);
-            }
-        });
+            data: {command: command}
+
+        }).success(_.bind(self.update, self));
+    },
+
+    update: function (result){
+        this.appendToResultElement(result);
+        this.notifyObservers('notifyUpdateResultOnObservers', result);
+
+    },
+
+    notifyObservers: function (eventName, result) {
+        this.observers.trigger(eventName, result);
+    },
+    updateResultOnObservers: function (event, result) {
+        this.appendToResultElement(result);
+    },
+    appendToResultElement: function ( result) {
+
+        this.resultElement.append("<div>"+result.result+"</div>");
     }
+};
 
-
-}
-
+var CalculatorCreator = function(viewID, template){
+    template.attr('id', viewID);
+    $(".calculator-container").append( template );
+    return new Calculator(viewID);
+};
 
 $(document).ready(function()
     {
-        //alert("Hello ready function");
-        calculator1= new Calculator("#calculator1");
-        calculator2= new Calculator("#calculator2");
+
+        var template = $('.calculator').clone();
+        var calculator1 = new CalculatorCreator("calculator-1", template);
     }
 
 );

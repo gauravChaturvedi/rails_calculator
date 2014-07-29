@@ -1,2 +1,4 @@
 [  12919]   WARN - api.vfs.impl.local.FileWatcher - Watcher terminated with exit code 130 
 [  80873]   WARN - api.vfs.impl.local.FileWatcher - Watcher terminated with exit code 0 
+[ 678309]  ERROR - r.EditorHighlighterFactoryImpl - java.lang.Throwable: Do not log ProcessCanceledException 
+[ 678310]  ERROR - r.EditorHighlighterFactoryImpl - java.lang.Throwable: Do not log ProcessCanceledException 

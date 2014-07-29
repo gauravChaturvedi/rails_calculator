@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe API::CalculatorController do
+describe Api::CalculatorController do
 
   context '#update' do
     it 'should do addition' do
@@ -17,7 +17,7 @@ describe API::CalculatorController do
 
   end
   context "integration - multiple commands" do
-    xit "should add 5 and multipy 3" do
+    it "should add 5 and multipy 3" do
       put :update, :command =>"add 5"
       put :update, :command =>"mul 3"
       expect(response.status).to eq(200)
