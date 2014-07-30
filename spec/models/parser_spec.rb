@@ -48,7 +48,13 @@ describe 'Parser' do
       end
     end
 
-
+    context '#Invalid Input' do
+      it 'should do nothing on an invalid command  ' do
+        initial_state = calculator.state
+        parser.perform_operation("invalid input")
+        expect(calculator.state).to eq(initial_state)
+      end
+    end
 
   end
 

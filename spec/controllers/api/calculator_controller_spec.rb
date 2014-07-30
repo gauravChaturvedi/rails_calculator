@@ -2,6 +2,13 @@ require 'rails_helper'
 
 describe Api::CalculatorController do
 
+  let(:user){User.create(:email => "test@test.com", :encrypted_password => "abcdefghijkl")}
+  before(:each) do
+    sign_in :user, user
+    request.env['warden'].stub :authenticate! => user
+    allow(controller).to receive(:current_user) { user }
+  end
+
   context '#update' do
     it 'should do addition' do
       put :update, :command => "add 5"

@@ -4,6 +4,7 @@ var Calculator =function(viewID){
     this.inputElement = $("#"+viewID+" .command");
     this.submitButton = $("#"+viewID+" .submit");
     this.resultElement = $("#"+viewID+" .state");
+    this.addButton = $("#"+viewID+" .addc");
     this.calculatorCreated =false;
     this.initialize();
 };
@@ -64,6 +65,7 @@ $(document).ready(function()
 
         var template = $('.calculator').clone();
         var calculator1 = new CalculatorCreator("calculator-1", template);
+
     }
 
 );
